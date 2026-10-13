@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace _13._10
 {
@@ -11,8 +12,91 @@ namespace _13._10
         }
         static void Main(string[] args)
         {
-            int x = 2;
-            int y; y = 3;
+            // Создать прямоугольную матрицу N x M. 
+            // которую отзеркалить по вертикали
+
+            {
+                // матрицы - прямоугольные и ступенчатые
+                {
+                    Console.Write("введите высоту матрицы: ");
+                    int row = int.Parse(Console.ReadLine());
+
+                    Console.Write("введите ширину матрицы: ");
+                    int col = int.Parse(Console.ReadLine());
+                    int[,] matrix = new int[row, col];
+
+                    for(int i = 0; i < matrix.GetLength(0); ++i)
+                    {
+                        for(int j = 0; j < matrix.GetLength(1); ++j)
+                        {
+                            Console.Write($"Введите значение матрицы[{i}][{j}]: ");
+                            matrix[i, j] = int.Parse(Console.ReadLine());
+                        }
+                    }
+
+                    int middleI = matrix.GetLength(0) / 2;
+                    int middleJ = matrix.GetLength(1) / 2;
+
+                    Console.WriteLine($"Элемент середины матрицы: [{middleI}][{middleJ}] = {matrix[middleI, middleJ]}");
+                }
+
+                Console.Clear();
+                {
+                    Console.Write("введите количество строк матрицы: ");
+                    int row = int.Parse(Console.ReadLine());
+
+                    int[][] matrix = new int[row][];
+
+                    for(int i = 0; i < matrix.Length; ++i)
+                    {
+                        matrix[i] = new int[i + 1];
+                        for(int j = 0; j < matrix[i].Length; ++j)
+                        {
+                            Console.Write($"Введите значение матрицы[{i}][{j}]: ");
+                            matrix[i][j] = int.Parse(Console.ReadLine());
+                        }
+                    }
+
+                    for (int i = 0; i < matrix.Length; ++i)
+                    {
+                        for (int j = 0; j < matrix[i].Length; ++j)
+                        {
+                            Console.Write($"{matrix[i][j]} ");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+            }
+
+            {
+                Console.Write("введите разамер массива: ");
+                int n = int.Parse(Console.ReadLine());
+                // Статичные массивы
+                int[] mas = new int[n];
+
+                for(int i = 0; i < mas.Length; ++i)
+                {
+                    Console.Write($"Введите значение массива[{i}]: ");
+                    mas[i] = int.Parse(Console.ReadLine());
+                }
+
+                int sum = 0, avg = 0;
+                for(int i = 0; i < mas.Length; ++i)
+                {
+                    sum += mas[i];
+                }
+                avg = sum / mas.Length;
+
+                Console.WriteLine($"Сумма всех значений массива = {sum}, их среднее значение = {avg}");
+
+                sum = mas.Sum();
+                double davg = mas.Average();
+
+                Console.WriteLine($"Сумма всех значений массива = {sum}, их среднее значение = {davg}");
+
+                // Добавить элемент не в массив, а создать и вернуь новый массив, в котором будет новый элемент
+                mas.Append(2);
+            }
 
             /**
              *  int, long, short, byte
