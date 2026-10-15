@@ -5,185 +5,75 @@ namespace _13._10
 {
     internal class Program
     {
-
-        static int ReadInt()
+        static void TestFunction(string x)
         {
-            return int.Parse(Console.ReadLine());
+            x = "999";
         }
+
         static void Main(string[] args)
         {
-            // Создать прямоугольную матрицу N x M. 
-            // которую отзеркалить по вертикали
-
             {
-                // матрицы - прямоугольные и ступенчатые
-                {
-                    Console.Write("введите высоту матрицы: ");
-                    int row = int.Parse(Console.ReadLine());
-
-                    Console.Write("введите ширину матрицы: ");
-                    int col = int.Parse(Console.ReadLine());
-                    int[,] matrix = new int[row, col];
-
-                    for(int i = 0; i < matrix.GetLength(0); ++i)
-                    {
-                        for(int j = 0; j < matrix.GetLength(1); ++j)
-                        {
-                            Console.Write($"Введите значение матрицы[{i}][{j}]: ");
-                            matrix[i, j] = int.Parse(Console.ReadLine());
-                        }
-                    }
-
-                    int middleI = matrix.GetLength(0) / 2;
-                    int middleJ = matrix.GetLength(1) / 2;
-
-                    Console.WriteLine($"Элемент середины матрицы: [{middleI}][{middleJ}] = {matrix[middleI, middleJ]}");
-                }
-
-                Console.Clear();
-                {
-                    Console.Write("введите количество строк матрицы: ");
-                    int row = int.Parse(Console.ReadLine());
-
-                    int[][] matrix = new int[row][];
-
-                    for(int i = 0; i < matrix.Length; ++i)
-                    {
-                        matrix[i] = new int[i + 1];
-                        for(int j = 0; j < matrix[i].Length; ++j)
-                        {
-                            Console.Write($"Введите значение матрицы[{i}][{j}]: ");
-                            matrix[i][j] = int.Parse(Console.ReadLine());
-                        }
-                    }
-
-                    for (int i = 0; i < matrix.Length; ++i)
-                    {
-                        for (int j = 0; j < matrix[i].Length; ++j)
-                        {
-                            Console.Write($"{matrix[i][j]} ");
-                        }
-                        Console.WriteLine();
-                    }
-                }
+                Point point = new Point();
+                point.x = 2;
             }
 
             {
-                Console.Write("введите разамер массива: ");
-                int n = int.Parse(Console.ReadLine());
-                // Статичные массивы
-                int[] mas = new int[n];
+                int gg = 7;
+                TestFunction(gg.ToString());
 
-                for(int i = 0; i < mas.Length; ++i)
-                {
-                    Console.Write($"Введите значение массива[{i}]: ");
-                    mas[i] = int.Parse(Console.ReadLine());
-                }
-
-                int sum = 0, avg = 0;
-                for(int i = 0; i < mas.Length; ++i)
-                {
-                    sum += mas[i];
-                }
-                avg = sum / mas.Length;
-
-                Console.WriteLine($"Сумма всех значений массива = {sum}, их среднее значение = {avg}");
-
-                sum = mas.Sum();
-                double davg = mas.Average();
-
-                Console.WriteLine($"Сумма всех значений массива = {sum}, их среднее значение = {davg}");
-
-                // Добавить элемент не в массив, а создать и вернуь новый массив, в котором будет новый элемент
-                mas.Append(2);
-            }
-
-            /**
-             *  int, long, short, byte
-             *  
-             *  int - 4 байта
-             *  long - 8 байт
-             *  short - 2 байта
-             *  byte - 1 байт
-             *  
-             *  uint, ulong, ushort, ubyte - unsigned TYPEs
-             */
-
-            /**
-             *  Приведение типов - работает очень строго
-             *  
-             *  byte <- short <- int <- long
-             */
-            {
-                byte b = 2;
-                short s = 2;
-                int i = 2;
-                long l = 2;
-
-                l = i; l = s; l = b;
-                i = s; i = b; // ERROR i = l; т.к попытка значение на 8б запись в ячейку на 4б
-                s = b;
-
-                ushort us = 2;
-                uint ui = 2;
-                ulong ul = 2;
-
-                // Исключение - приведение типов между безнаковыми и обычными
-                // ul = i;
-
-                // Хоть эти данные и являются примитивами, но у них есть опция toString()
-                i.ToString();
+                Console.WriteLine(gg);
             }
 
             {
-                // Условия, циклы
-                int from = -100, to = 100, count = 0;
+                string name = Console.ReadLine().ToLower();
 
-                for (int i = from; i <= to; ++i)
+                switch (name)
                 {
-                    if (i % 2 == 0)
-                    {
-                        count += 1;
-                    }
-                }
-
-                {
-                    int i = from;
-                    while (i <= to)
-                    {
-                        if (i % 2 == 0)
+                    case "nikolay":
+                    case "vasiliy":
+                    case "grigoriy":
                         {
-                            count += 1;
+                            Console.WriteLine($"Name - '{name}' - is male");
+                            break;
                         }
-                        ++i;
-                    }
-                }
 
-                {
-                    int i = from;
-                    do
-                    {
-                        if (i % 2 == 0)
+                    case "anastasiya":
+                    case "yulia":
+                    case "ekaterina":
                         {
-                            count += 1;
+                            Console.WriteLine($"Name - '{name}' - is female");
+                            break;
                         }
-                        ++i;
-                    } while (i <= to);
                 }
-
             }
 
-            {
-                // Ввод, вывод
+            Console.ReadLine();
+        }
+    }
 
-                // Вывод
-                Console.Write("Введите ваш возраст: ");
-                // Ввод из консоли всегда в формате строки
-                byte age = byte.Parse(Console.ReadLine());
+    class Point
+    {
+        // Объсение полей/методов
+        /*
+         * ACCESS_LEVEL TYPE NAME = INIT_VALUE;
+         * 
+         * ACCESS_LEVEL RETURN_TYPE NAME(ARG_TYPE1 NAME1, ARG_TYPE2 NAME2, ARG_TYPE3 NAME3, ...) {}
+         * 
+         * 
+         * ACESS_LEVEL = { public, protected, private, ..., ... } - по умолчанию private
+         */
+        public int x, y;
 
-                int birthYear = DateTime.Now.Year - age;
-                Console.WriteLine($"Вы родились в {birthYear}?");
-            }
+        public double Distance(Point other)
+        {
+            return Math.Sqrt(Math.Pow(other.x - x, 2) + Math.Pow(other.y - y, 2));
+        }
+
+        public Point() { }
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
     }
 }
