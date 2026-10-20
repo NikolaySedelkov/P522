@@ -1,14 +1,60 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Incapsulate;
 
 namespace _13._10
 {
     internal class Program
     {
+        /**
+         *  1. Подготовить 2 интерфейса под геометрические фигуры:
+         *      1. Определять возможность фигуры вращаться на определенный угол
+         *      2. Измененение размеров фигуры
+         *      
+         *  Создать несколько гео. фигур. которые бы реализовали интерфейсы
+         *  
+         */
+
+        static T Temp1<T>(T value) where T : Parent
+        {
+            return value;
+        }
+        // шаблонные методы и классы
+        static void Temp<T>(T value) where T : Parent
+        //static void Temp(Parent value)
+        {
+            //value.handler();
+        }
+
+        static T TempList<T>(List<T> list) where T : Parent
+        {
+            return list[0];
+        }
+
         static void Main(string[] args)
         {
             InternalExample incapsulate = new InternalExample();
             incapsulate.print();
+
+            {
+                Parent p = new Child1();
+                Child2 child = null;
+
+                List<Parent> pList = new List<Parent>(){ new Child1(), new Child1(), new Child1() };
+                TempList(pList);
+
+                List<Child1> cList = new List<Child1>() { new Child1(), new Child1(), new Child1() };
+                TempList(cList);
+
+                Temp1(p);
+                Temp1(child);
+                Temp1(new Child1());
+
+                Temp(p);
+                Temp(child);
+                Temp(new Child1());
+            }
 
             Guard guard = new Guard("1111");
             guard.x = 2;
