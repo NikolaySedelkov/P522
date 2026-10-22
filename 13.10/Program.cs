@@ -1,147 +1,146 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Incapsulate;
 
 namespace _13._10
 {
-    internal class Program
+    class PointDistanceComparer : IComparer, IComparer<Point>
     {
-        /**
-         *  1. Подготовить 2 интерфейса под геометрические фигуры:
-         *      1. Определять возможность фигуры вращаться на определенный угол
-         *      2. Измененение размеров фигуры
-         *      
-         *  Создать несколько гео. фигур. которые бы реализовали интерфейсы
-         *  
-         */
-
-        static T Temp1<T>(T value) where T : Parent
+        public int Compare(object x, object y)
         {
-            return value;
-        }
-        // шаблонные методы и классы
-        static void Temp<T>(T value) where T : Parent
-        //static void Temp(Parent value)
-        {
-            //value.handler();
+            if (x is Point first && y is Point second)
+            {
+                return Compare(first, second);
+            }
+            throw new ArgumentException();
         }
 
-        static T TempList<T>(List<T> list) where T : Parent
+        public int Compare(Point x, Point y)
         {
-            return list[0];
+            return x.Distance().CompareTo(y.Distance());
+        }
+    }
+
+    class PointXComparer : IComparer<Point>
+    {
+        public int Compare(Point first, Point second)
+        {
+            return first.X.CompareTo(second.X);
+        }
+    }
+
+    class Point : IComparable, IComparable<Point>
+    {
+        int x, y;
+
+        public int X { get => x; }
+        public int Y { get => Y; }
+        public Point(int x, int y)
+        {
+            this.y = y;
+            this.x = x;
         }
 
+        public int CompareTo(object obj)
+        {
+            // is - опретор провреки возможности приведение типа
+            if (obj is Point)
+            {
+                // as - приведение типа
+                Point other = obj as Point;
+
+                return CompareTo(other);
+            }
+            throw new ArgumentException($"{obj} is not type Point");
+        }
+
+        public int CompareTo(Point other)
+        {
+            return this.Distance().CompareTo(other.Distance());
+        }
+
+        public double Distance()
+        {
+            return Math.Sqrt(x * x + y * y);
+        }
+
+        public override string ToString()
+        {
+            return $"({x}, {y})";
+        }
+    }
+
+    class Poligon : IEnumerable
+    {
+        List<Point> nodes;
+
+        public Poligon(List<Point> nodes)
+        {
+            this.nodes = nodes;
+        }
+
+        public IEnumerator<Point> GetEnumerator()
+        {
+            return nodes.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+    internal class Programe
+    {
         static void Main(string[] args)
         {
-            InternalExample incapsulate = new InternalExample();
-            incapsulate.print();
-
             {
-                Parent p = new Child1();
-                Child2 child = null;
+                List<Point> points = new List<Point>(){ new Point(-100, 4), new Point(20, 4), new Point(-1, -1) };
+                Poligon poligon = new Poligon(points);
 
-                List<Parent> pList = new List<Parent>(){ new Child1(), new Child1(), new Child1() };
-                TempList(pList);
-
-                List<Child1> cList = new List<Child1>() { new Child1(), new Child1(), new Child1() };
-                TempList(cList);
-
-                Temp1(p);
-                Temp1(child);
-                Temp1(new Child1());
-
-                Temp(p);
-                Temp(child);
-                Temp(new Child1());
+                Console.WriteLine("summary poligon: ");
+                foreach(Point node in poligon)
+                {
+                    Console.WriteLine(node);
+                }
             }
 
-            Guard guard = new Guard("1111");
-            guard.x = 2;
-            //guard.readonlyField = "Hello world!";
-            //guard.readonlyField = "Hello world!";
+            Console.WriteLine("\n\n=============================\n\n");
 
-            Console.WriteLine($"ReadOnly field of class 'Guard' = {guard.readonlyField}");
-            Console.WriteLine($"Const field of class 'Guard' = {Guard.constField}");
-        }
-    }
+            {
+                Point[] points = { new Point(-100, 4), new Point(20, 4), new Point(-1, -1) };
 
-    interface IMath
-    {
-        int sum(int a, int b);
-        int sub(int a, int b);
-        int div(int a, int b);
-        int mul(int a, int b);
-    }
+                Array.Sort(points, new PointXComparer());
 
-    class Calculate : IMath
-    {
-        public int sum(int a, int b)
-        {
-            return a + b;
-        }
-        public int sub(int a, int b)
-        {
-            return a - b;
-        }
-        public int div(int a, int b)
-        {
-            return a / b;
-        }
-        public int mul(int a, int b)
-        {
-            return a * b;
-        }
-    }
+                foreach (Point point in points)
+                {
+                    Console.WriteLine(point);
+                }
+            }
 
-    // partial - частичный, такой класс можно разбить на несколько файлов
-    partial class Guard
-    {
-        // readonly - модификатор, который указаывает что значение поля можно инициализировать
-        // только один раз в момент создания экземляра класса
-        // - инициализия и какое-либо изменение только в конструкторе
-        public readonly string readonlyField;
-        public const string constField = "CONST";
+            Console.WriteLine("\n\n=============================\n\n");
 
-        public Guard(string readonlyField)
-        {
-            this.readonlyField = readonlyField;
-        }
+            {
+                Point[] points = { new Point(1, 4), new Point(20, 4), new Point(-1, -1) };
 
-        /*
-        void setReadonlyField(string value)
-        {
-            // readonlyField = value; ERROR
-        }
-        */
-    }
+                Array.Sort(points);
 
-    abstract class Parent
-    {
-        abstract public void execute();
-        virtual public void handler() {
-            Console.WriteLine("Parent");
-        }
-    }
+                foreach (Point point in points)
+                {
+                    Console.WriteLine(point);
+                }
+            }
 
-    // в классе переопрелили все абстракные методы, значит класс не абстрактный
-    class Child1 : Parent
-    {
-        override public void execute() {
-            Console.WriteLine("Override 'execute'");
-        }
+            Console.WriteLine("\n\n=============================\n\n");
+            
+            {
+                int[] mas = { 42, 24, 1000 };
+                Array.Sort(mas);
 
-        override public void handler() {
-            Console.WriteLine("Child");
-        }
-    }
-
-    // в классе не переопрелили все абстракные методы - значит класс должен быть абстрактным
-    abstract class Child2 : Parent
-    {
-        override public void handler()
-        {
-            Console.WriteLine("Child");
+                foreach(int value in mas)
+                {
+                    Console.WriteLine(value);
+                }
+            }
         }
     }
 }
