@@ -16,6 +16,29 @@ namespace _13._10
         }
     }
 
+    class Rectangle
+    {
+        uint a, b;
+
+        public Rectangle(uint a, uint b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public uint A { get => a; }
+        public uint B { get => b; }
+
+        public static bool IsAllSideEven(Rectangle rectangle)
+        {
+            return rectangle.A % 2 == 0 && rectangle.B % 2 == 0;
+        }
+
+        public override string ToString()
+        {
+            return $"({A}, {B})";
+        }
+    }
+
     internal class Program
     {
         static int FindIndex<T>(ICollection<T> collenction, IFounder<T> founder)
@@ -58,6 +81,23 @@ namespace _13._10
 
         static void Main(string[] args)
         {
+            {
+                List<Rectangle> rectangles = new List<Rectangle>
+                {
+                    new Rectangle(2, 4),
+                    new Rectangle(1, 100),
+                    new Rectangle(5, 2),
+                    new Rectangle(70, 2),
+                    new Rectangle(10, 10)
+                };
+
+                {
+                    int index = FindIndex(rectangles, Rectangle.IsAllSideEven);
+                    Console.WriteLine($"Прямоугольник, у котого обе стороны нечетные: {rectangles[index]}, под номером: {index}");
+                }
+                
+            }
+
             List<int> list = new List<int> { 1, 2, 3, 4, 5 };
             {
                 int index = FindIndex(list, new EvenIntFounder());
