@@ -113,13 +113,13 @@ namespace _13._10
             return Math.Sqrt(v) >= 0;
         }
 
-        static List<Rectangle> Filter(List<Rectangle> list, Predicate<Rectangle> predicate)
+        static List<T> Filter<T>(List<T> list, Predicate<T> predicate)
         {
-            List<Rectangle> result = new List<Rectangle>();
-            foreach(Rectangle rectangle in list)
+            List<T> result = new List<T>();
+            foreach(T value in list)
             {
-                if (predicate(rectangle)) {
-                    result.Add(rectangle);
+                if (predicate(value)) {
+                    result.Add(value);
                 }
             }
             return result;
@@ -128,6 +128,46 @@ namespace _13._10
         static List<Rectangle> Filter(
             List<Rectangle> list, 
             FounderRectangleSqeaMore founder) => Filter(list, founder.IsFind);
+
+        // delegate - специальный конструктор для типов функций
+        delegate bool SortComparer<T>(T val1, T val2); 
+        static List<T> Sort<T>(List<T> old, SortComparer<T> comparer)
+        {
+            List<T> result = new List<T>(old);
+
+            for(int i = 1; i < result.Count; ++i)
+            {
+                for(int j = 0; j < result.Count - i; ++j)
+                {
+                    if (comparer(result[j], result[j + 1]))
+                    {
+                        T temp = result[j];
+                        result[j] = result[j + 1];
+                        result[j + 1] = temp;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        delegate double MathCalc(double num1, double num2);
+
+        class Calc
+        {
+            List<MathCalc> handlers = new List<MathCalc>
+            {
+                (num1, num2) => num1 + num2,
+                (num1, num2) => num1 - num2,
+                (num1, num2) => num1 / num2,
+                (num1, num2) => num1 * num2,
+            };
+
+            public void Add(MathCalc handler)
+            {
+                handlers.Add(handler);
+            } 
+        }
 
         static bool IsSqeaMore20(Rectangle rectangle)
         {
@@ -138,6 +178,15 @@ namespace _13._10
 
         static void Main(string[] args)
         {
+            {
+                Calc calc = new Calc();
+                calc.Add(Math.Pow);
+                calc.Add(
+                    (height, weight) => 2 * (height + weight)
+                );
+            }
+
+
             {
                 List<Rectangle> rectangles = new List<Rectangle>
                 {
@@ -155,6 +204,24 @@ namespace _13._10
 
                 result = Filter(rectangles, founderN);
                 result = Filter(rectangles, founderN.IsFind);
+
+                Predicate<Rectangle> t = rectangle => rectangle.B * rectangle.A > N;
+
+                result = Filter(rectangles, t);
+                result = Filter(
+                    rectangles,
+                    /**
+                     * 
+                     * bool ANONIMUS_FUNCTION(Rectangle rectangle) {
+                     *      return rectangle.B * rectangle.A > N;
+                     * }
+                     * 
+                     */
+                    (rectangle) =>
+                    {
+                        return rectangle.B * rectangle.A > N;
+                    }
+                );
             }
 
             {
@@ -180,7 +247,24 @@ namespace _13._10
                 
             }
 
+
             List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+
+            {
+                Sort(
+                    list,
+                    (num1, num2) => num1 > num2
+                );
+
+                Sort(
+                   list,
+                   (num1, num2) =>
+                   {
+                       return num1 < num2;
+                   }
+               );
+            }
+
             {
                 int index = FindIndex(list, new EvenIntFounder());
                 Console.WriteLine($"Первый четный элемент: {list[index]}, на позиции {index}");
