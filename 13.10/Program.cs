@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace _13._10
 {
@@ -176,8 +177,138 @@ namespace _13._10
 
         static bool IsBlock(Rectangle rectangle) => rectangle.B > rectangle.A;
 
+        static bool IsSimple(int value) => value % 2 != 0;
+
+        // Исходная модель заказа
+        public class Order
+        {
+            public int Id { get; set; }
+            public string Product { get; set; }
+            public string Category { get; set; }
+            public decimal Price { get; set; }
+            public int Quantity { get; set; }
+            public bool IsPaid { get; set; }
+        }
+
+        // Модель для итоговой статистики
+        public class CategoryStats
+        {
+            public decimal TotalRevenue { get; set; }
+            public int TotalItemsSold { get; set; }
+            public string MostExpensiveProduct { get; set; }
+
+            public override string ToString()
+            {
+                return $"Total: {TotalRevenue}\nCount: {TotalItemsSold}\nMax: {MostExpensiveProduct}";
+            }
+        }
+
         static void Main(string[] args)
         {
+            {
+                // Тестовые данные
+                List<Order> orders = new List<Order> { 
+                    new Order { Id = 1, Product = "Ноутбук", Category = "Электроника", Price = 80000m, Quantity = 1, IsPaid = true },
+                    new Order { Id = 2, Product = "Мышь", Category = "Электроника", Price = 1500m, Quantity = 2, IsPaid = true },
+                    new Order { Id = 3, Product = "Футболка", Category = "Одежда", Price = 2000m, Quantity = 3, IsPaid = false },
+                    new Order { Id = 4, Product = "Клавиатура", Category = "Электроника", Price = 5000m, Quantity = 1, IsPaid = true },
+                    new Order { Id = 5, Product = "Джинсы", Category = "Одежда", Price = 4500m, Quantity = 2, IsPaid = true },
+                    new Order { Id = 6, Product = "Кроссовки", Category = "Одежда", Price = 7000m, Quantity = 1, IsPaid = false },
+                    new Order { Id = 7, Product = "Кофеварка", Category = "Бытовая техника", Price = 12000m, Quantity = 1, IsPaid = true },
+                    new Order { Id = 8, Product = "Куртка", Category = "Одежда", Price = 10000m, Quantity = 1, IsPaid = true }
+                };
+
+                // TASK: Составить список продуктор, каждой категории
+
+                Dictionary<string, CategoryStats> groups = orders
+                    .Where(order => order.IsPaid)
+                    .GroupBy(order => order.Category)
+                    .ToDictionary(
+                        group => group.Key,
+                        group =>
+                        {
+                            List<Order> _orders = group.ToList();
+                            return new CategoryStats
+                            {
+                                TotalRevenue = _orders.Select(order => order.Price * order.Quantity).Sum(),
+                                TotalItemsSold = _orders.Select(order => order.Quantity).Sum(),
+                                MostExpensiveProduct = _orders.OrderByDescending(order => order.Price).First().Product
+                            };
+                        }
+                    )
+                    .OrderByDescending(group => group.Value.TotalRevenue)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Value
+                    );
+
+                foreach( var group in groups)
+                {
+                    Console.WriteLine( group.Key );
+                    Console.WriteLine(group.Value);
+                    Console.WriteLine("===============");
+                }
+            }
+
+            {
+                List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+                
+                if(numbers.Exists(value => value > 0))
+                {
+                    int target = numbers.Find(value => value > 0);
+                    int index = numbers.FindIndex(value => value > 0);
+                    List<int> allTargets = numbers.FindAll(value => value > 0);
+                }
+
+                {
+                    // Группировка по кол-во цифер в чисел
+                    Dictionary<byte, List<int>> groups = new Dictionary<byte, List<int>>();
+                    foreach(int value in numbers)
+                    {
+                        byte countDigist = (byte)value.ToString().Length;
+                        if(groups.ContainsKey(countDigist))
+                        {
+                            groups[countDigist].Add(value);
+                        } else
+                        {
+                            groups.Add(countDigist, new List<int> { value });
+                        }
+                    }
+                }
+
+                {
+                    // Группировка по кол-во цифер в чисел
+                    Dictionary<byte, List<int>> groups = numbers.GroupBy(
+                        value => (byte)value.ToString().Length
+                    ).ToDictionary(
+                        group => group.Key,
+                        group => group.ToList()
+                    );
+                }
+
+                // LINQ
+                {
+                    // Поиск всех элементов, подходящих под критерий
+                    numbers.Where(value => value > 5);
+                    // Сделать из одной коллекции - другую, в которой каждое новое значение 
+                    // будет каким-то образом зависить от другово
+                    List<Rectangle> rectangles = numbers.Select(value => new Rectangle(
+                        value > 0 ? (uint)value : 0, value > 0 ? (uint)value : 0)).ToList();
+                    // Сортировка (возрастание)
+                    rectangles.OrderBy(rectangle => rectangle.A);
+                    // (убывание)
+                    rectangles.OrderByDescending(rectangle => rectangle.B);
+
+
+                    numbers
+                        .Where(value => value > 5)
+                        .Select(value => new Rectangle(
+                            value > 0 ? (uint)value : 0, value > 0 ? (uint)value : 0))
+                        .OrderBy(rectangle => rectangle.A);
+                }
+                
+            }
+
             {
                 Calc calc = new Calc();
                 calc.Add(Math.Pow);
@@ -185,7 +316,6 @@ namespace _13._10
                     (height, weight) => 2 * (height + weight)
                 );
             }
-
 
             {
                 List<Rectangle> rectangles = new List<Rectangle>
